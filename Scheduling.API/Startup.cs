@@ -1,16 +1,15 @@
-using Scheduling.Core.Appointment.Repositories;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using RestAPI.Services;
-using Scheduling.Infrastructure.Repositories;
+using Scheduling.API.Services;
+using Scheduling.Core.Appointment.Repositories;
 using Scheduling.Infrastructure.Factories;
+using Scheduling.Infrastructure.Repositories;
 
-namespace RestAPI
+namespace Scheduling.API
 {
     public class Startup
     {
@@ -55,6 +54,8 @@ namespace RestAPI
                 endpoints.MapControllers();
             });
 
+            // global error handler
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>

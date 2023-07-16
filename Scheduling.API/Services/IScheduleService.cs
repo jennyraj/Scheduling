@@ -1,18 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Scheduling.API.Model;
 
-namespace RestAPI.Services
+namespace Scheduling.API.Services
 {
     public interface IScheduleService
     {
         
-        Task<ScheduleDto> GetAppointment(string timeslot);
-        Task<List<ScheduleDto>> GetAppointment();
-
+         Task<AppointmentDto> GetAppointment(string appointmentId);
+         Task<AppointmentDto> CancelAppointment(string appointmentId, string updatedBy);
     }
 }

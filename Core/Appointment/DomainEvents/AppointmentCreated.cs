@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using Tacta.EventStore.Domain;
+﻿using Tacta.EventStore.Domain;
 
 namespace Scheduling.Core.Appointment
 {
-    public class AppointmentCreated : IEnumerable<IDomainEvent>
+    public class AppointmentCreated : DomainEvent
     {
-        public AppointmentCreated(string toString, string time, string apptId)
+        public string AppointmentId { get; }
+        public string AppointmentTime { get; }
+
+        public AppointmentCreated(string appointmentId, string time): base(appointmentId)
         {
-            throw new System.NotImplementedException();
+            AppointmentId = appointmentId;
+            AppointmentTime = time;
         }
     }
 }

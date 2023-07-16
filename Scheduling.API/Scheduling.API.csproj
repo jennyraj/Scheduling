@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Infrastructure\Scheduling.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="obj" />
+  </ItemGroup>
+
 </Project>

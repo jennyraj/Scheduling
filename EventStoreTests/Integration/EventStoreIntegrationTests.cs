@@ -1,5 +1,10 @@
 ﻿using System.Threading.Tasks;
+
+using FluentAssertions;
+
 using NUnit.Framework;
+
+using Scheduling.Core.Appointment;
 using Scheduling.Core.Appointment.Repositories;
 using Scheduling.EventStoreProjectTests.Infrastructure;
 using Scheduling.Infrastructure.Factories;
@@ -22,68 +27,31 @@ namespace Scheduling.EventStoreProjectTests.Integration
         }
 
         [Test]
-        public async Task Given_PersonAggregateCreated_When_SavedToEventStore_Then_ShouldBeTheSameWhenFetched()
+        public async Task Given_ApptAggregateCreated_When_SavedToEventStore_Then_ShouldBeTheSameWhenFetched()
         {
-          /*  var personId = new PersonId();
+            var apptId = new AppointmentId();
 
-            var personAggregate = Person.CreateNewPerson("Ben", "Ar");
+            var apptAggregate = Appointment.CreateNewAppointment("8:00AM");
 
-            await _eventStore.SaveAsync(personId,personAggregate.Version, personAggregate.DomainEvents, "PersonAggregate");
+            await _eventStore.SaveAsync(apptId,apptAggregate.Version, apptAggregate.DomainEvents, "ApptAggregate");
             
-            var results = await _eventStore.LoadAsync(personId);
+            var results = await _eventStore.LoadAsync(apptId);
 
-            var fetchedPerson = new Person(results);
+            var fetchedAppt = new Appointment(results);
             Assert.IsNotNull(results);
-            Assert.AreEqual(personAggregate, fetchedPerson);*/
+            Assert.AreEqual(apptAggregate, fetchedAppt); 
         }
+  
 
         [Test]
-        public async Task Given_PersonAggregate_When_AddressChanged_Then_ShouldBeTheSameWhenFetched()
+        public async Task Fetch_NonExistentApptFromRepo_Should_Return_NUll()
         {
-            /*
-            var personId = new PersonId();
+            
+            var apptId = new AppointmentId();
 
-            var personAggregate = Person.CreateNewPerson("Chuck", "Norris");
-            personAggregate.ChangePersonAddress("street1", "country1", "111222", "city");
+            var results = await _scheduleRepository.GetAppointment(apptId.ToString());
 
-            await _eventStore.SaveAsync(personId, personAggregate.Version, personAggregate.DomainEvents, "PersonAggregate");
-
-            var results = await _eventStore.LoadAsync(personId);
-
-            var fetchedPerson = new Person(results);
-            Assert.IsNotNull(results);
-            Assert.AreEqual(fetchedPerson.PersonAddress.City, "city");
-            Assert.AreEqual(fetchedPerson.PersonAddress.Country, "country1");
-            Assert.AreEqual(fetchedPerson.PersonAddress.ZipCode, "111222");
-            Assert.AreEqual(fetchedPerson.PersonAddress.Street, "street1");
-            */
-        }
-
-        [Test]
-        public async Task Given_PersonAggregate_When_AddressChanged_Then_FetchWithPersonRepository()
-        {
-          /*  var personId = new PersonId();
-
-            var personAggregate = Person.CreateNewPerson("Chuck", "Norris");
-            personAggregate.ChangePersonAddress("street1", "country1", "111222", "city");
-
-            await _eventStore.SaveAsync(personId, personAggregate.Version, personAggregate.DomainEvents, "PersonAggregate");
-
-            var results = await _appointmentRepository.GetPerson(personId.ToString());
-            results.LastName.Should().Be("Norris");
-            results.FirstName.Should().Be("Chuck");
-            */
-        }
-
-        [Test]
-        public async Task Fetch_NonExistentPersonFromRepo_Should_Return_NUll()
-        {
-            /*
-            var personId = new PersonId();
-
-            var results = await _appointmentRepository.GetPerson(personId.ToString());
-
-            results.Should().BeNull();*/
+            results.Should().BeNull(); 
 
         }
     }

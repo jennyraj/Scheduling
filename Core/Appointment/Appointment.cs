@@ -32,13 +32,30 @@ namespace Scheduling.Core.Appointment
 
         }
 
-        public void CancelAppointment(string apptTime,string patientId, string updatedBy )
+        public void CancelAppointment(Appointment appointment  )
         {
-            Apply(new AppointmentCancelled(apptTime,patientId,updatedBy, Id.ToString()));
+            appointment.ApptStatus = "Cancelled";
+            appointment.PatientId = null;
+            //TODO  Apply(new AppointmentCancelled(  appointmentId));
         }
         public void On(AppointmentCancelled @event)
         {
 
+        }
+
+        public void On(AppointmentCreated @event)
+        {
+              Id = new AppointmentId(@event.AppointmentId);
+              ApptTime = @event.AppointmentTime;
+
+        }
+        public static Appointment CreateNewAppointment(string time)
+        {
+            var appt = new Appointment();
+            appt.Apply(new AppointmentCreated(new AppointmentId().ToString(),
+                time));
+
+            return appt;
         }
     }
 }

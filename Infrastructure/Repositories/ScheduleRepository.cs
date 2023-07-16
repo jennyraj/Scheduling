@@ -14,46 +14,17 @@ namespace Scheduling.Infrastructure.Repositories
             _eventStore = eventStore;
         }
 
-        public Task<Appointment> GetAppointment(string apptTime)
+        public async Task<Appointment> GetAppointment(string appointmentId)
         {
-            throw new NotImplementedException();
+            var apptId = new AppointmentId(appointmentId);
+            var apptEvents = await _eventStore.LoadAsync(apptId);
+            return apptEvents.Count>0 ? new Appointment(apptEvents) : null;
         }
-
-        public Task<List<Appointment>> GetAppt()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<object> SaveAppointmentAsync(object appt)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<object> SaveAppointmentAsync(Appointment appt)
         {
             await _eventStore.SaveAsync(appt.Id, appt.Version, appt.DomainEvents);
             return appt.Id;
         }
-
-        public Task<AppointmentId> UpdateApptAsync(Appointment appt)
-        {
-            throw new NotImplementedException();
-        }
-
-        /* public async Task<Person> GetPerson(string id)
-         {
-             var personId = new PersonId(id);
-             var personEvents = await _eventStore.LoadAsync(personId);
-
-             return personEvents.Count>0 ? new Person(personEvents) : null;
-         }
-
-         public async Task<PersonId> SavePersonAsync(Person person)
-         {
-             await _eventStore.SaveAsync(person.Id, person.Version, person.DomainEvents);
-             return person.Id;
-         }
- */
 
     }
 }
