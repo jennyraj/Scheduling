@@ -1,4 +1,4 @@
-# EventStore Example 
+# Scheduling API with Event Source Example 
 
 ## How to start
  
