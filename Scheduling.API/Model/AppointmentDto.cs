@@ -1,6 +1,6 @@
 ﻿namespace Scheduling.API.Model
 {
-    public class ScheduleDto
+    public class AppointmentDto
     {
     }
 }

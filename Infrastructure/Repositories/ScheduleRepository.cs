@@ -24,6 +24,17 @@ namespace Scheduling.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<object> SaveAppointmentAsync(object appt)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<object> SaveAppointmentAsync(Appointment appt)
+        {
+            await _eventStore.SaveAsync(appt.Id, appt.Version, appt.DomainEvents);
+            return appt.Id;
+        }
+
         public Task<AppointmentId> UpdateApptAsync(Appointment appt)
         {
             throw new NotImplementedException();

@@ -1,11 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using Scheduling.API.Model;
-using RestAPI.Services;
-
-using Swashbuckle.AspNetCore.Annotations;
-
-using System.Threading.Tasks;
+using Scheduling.API.Services;
 
 namespace Scheduling.API.Controllers
 {
