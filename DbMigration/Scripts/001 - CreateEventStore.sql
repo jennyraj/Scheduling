@@ -3,7 +3,7 @@
 -- noinspection SqlDialectInspectionForFile
 
 BEGIN TRANSACTION
-
+ 
 CREATE TABLE [dbo].[EventStore](
     [Id] [uniqueidentifier] NOT NULL,
     [CreatedAt] [datetime2] NOT NULL,

@@ -1,6 +1,10 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Scheduling.API
 {
@@ -28,19 +32,19 @@ namespace Scheduling.API
                 {
                     case AppException e:
                         // custom application error
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        response.StatusCode = (int) HttpStatusCode.BadRequest;
                         break;
                     case KeyNotFoundException e:
                         // not found error
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        response.StatusCode = (int) HttpStatusCode.NotFound;
                         break;
                     default:
                         // unhandled error
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        response.StatusCode = (int) HttpStatusCode.InternalServerError;
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                var result = JsonSerializer.Serialize(new {message = error?.Message});
                 await response.WriteAsync(result);
             }
         }
@@ -50,15 +54,17 @@ namespace Scheduling.API
     // that can be caught and handled within the application
     public class AppException : Exception
     {
-        public AppException() : base() { }
+        public AppException() : base()
+        {
+        }
 
-        public AppException(string message) : base(message) { }
+        public AppException(string message) : base(message)
+        {
+        }
 
         public AppException(string message, params object[] args)
-            : base(String.Format(CultureInfo.CurrentCulture, message, args))
+            : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
         }
     }
 }
- 
- 

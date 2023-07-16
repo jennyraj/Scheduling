@@ -11,7 +11,5 @@ namespace Scheduling.Core.Appointment.DomainEvents
             string apptTime, string patientId, string updatedBy, string Id) : base(Id.ToString())
         {
         }
-
-
     }
 }

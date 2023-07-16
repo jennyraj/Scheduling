@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Scheduling.API.Model;
 using Scheduling.API.Services;
@@ -12,7 +10,6 @@ namespace Scheduling.API.Controllers
     [Route("[controller]")]
     public class SchedulingController : ControllerBase
     {
-
         private readonly ScheduleService _scheduleService;
 
         public SchedulingController(ScheduleService scheduleService)
@@ -26,20 +23,12 @@ namespace Scheduling.API.Controllers
         /// </summary>
         /// <returns>Newly created appointment object aggregateId</returns>
         [HttpPost]
-        [SwaggerResponse((int) System.Net.HttpStatusCode.OK, Type = typeof(object))]
-        public async Task<List<string>> GenerateSchedule()
+        [Route("/Appointments")]
+        [SwaggerResponse((int) System.Net.HttpStatusCode.OK, Type = typeof(AppointmentDto))]
+        public async Task<object> CreateAppointment([FromBody] GenerateAppointmentDto appt)
         {
-            var list = new List<string>();
-            var dt = new DateTime(2023, 7, 15, 8, 0, 0);
-            for (var i=0; i < 18; i++)
-            {
-                var time = dt.ToShortTimeString();
-                var scheduleId = await _scheduleService.CreateAppointment(time);
-                list.Add( (scheduleId).ToString() ?? string.Empty);
-                dt=dt.AddMinutes(30);
-            }
-
-            return list;
+            var apptId = await _scheduleService.CreateAppointment(appt);
+            return new {AppointmentId = apptId.ToString()};
         }
 
         /// <summary>
@@ -51,26 +40,28 @@ namespace Scheduling.API.Controllers
         /// <param name="appointmentId"></param>
         /// <returns></returns>
         [HttpGet]
-        [SwaggerResponse((int)System.Net.HttpStatusCode.OK, Type = typeof(AppointmentDto))]
-        public async Task<AppointmentDto> GetAppointment([FromQuery] string appointmentId)
-        { 
+        [Route("/Appointments/{appointmentId}")]
+        [SwaggerResponse((int) System.Net.HttpStatusCode.OK, Type = typeof(AppointmentDto))]
+        public async Task<AppointmentDto> GetAppointment([FromRoute] string appointmentId)
+        {
             return await _scheduleService.GetAppointment(appointmentId);
         }
 
         /// <summary>
-        ///CancelAppointment
+        ///CancelAppointment:
+        ///The rest of the work flows
+        /// like Insurance validation, Referring Doctor Notification etc can start now. 
         /// </summary>
         /// <param name="appointmentId"></param>
         /// <param name="updatedBy"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPatch]
+        [Route("/Appointments/{appointmentId}")]
         [SwaggerResponse((int) System.Net.HttpStatusCode.OK, Type = typeof(AppointmentDto))]
-        public async Task<AppointmentDto> CancelAppointment([FromQuery] string appointmentId, string updatedBy)
+        public async Task<AppointmentDto> CancelAppointment([FromRoute] string appointmentId
+            , [FromQuery] string updatedBy)
         {
-            return  await _scheduleService.CancelAppointment(appointmentId, updatedBy);
-
+            return await _scheduleService.CancelAppointment(appointmentId, updatedBy);
         }
     }
-
-
 }

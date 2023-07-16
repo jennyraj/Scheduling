@@ -6,8 +6,8 @@ namespace Scheduling.Infrastructure.Repositories
 {
     public interface IEventStore
     {
-        Task SaveAsync(EntityId aggregateId, 
-            int originatingVersion, 
+        Task SaveAsync(EntityId aggregateId,
+            int originatingVersion,
             IReadOnlyCollection<IDomainEvent> events,
             string aggregateName = "Aggregate Name");
 

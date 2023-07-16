@@ -8,11 +8,12 @@ namespace Scheduling.Infrastructure.Factories
 
         public SqlConnectionFactory(string connectionString)
         {
-            this._connectionString = connectionString;
+            _connectionString = connectionString;
         }
+
         public SqlConnection SqlConnection()
         {
-            return new SqlConnection(this._connectionString);
+            return new(_connectionString);
         }
     }
 }

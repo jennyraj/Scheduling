@@ -6,8 +6,6 @@ namespace Scheduling.Infrastructure.Exceptions
     {
         public AggregateRootNotProvidedException(string message) : base(message)
         {
-
         }
-        
     }
 }

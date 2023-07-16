@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Scheduling.API.Model;
 using Scheduling.Core.Appointment;
 using Scheduling.Core.Appointment.Repositories;
@@ -16,10 +16,15 @@ namespace Scheduling.API.Services
             _scheduleRepository = scheduleRepository;
         }
 
+        /// <summary>
+        /// GetAppointment
+        /// </summary>
+        /// <param name="appointmentId"></param>
+        /// <returns></returns>
         public async Task<AppointmentDto> GetAppointment(string appointmentId)
         {
             var appointment = await _scheduleRepository.GetAppointment(appointmentId);
- 
+
             if (appointment == null) return new AppointmentDto(); // throw not found exception
 
             return new AppointmentDto
@@ -30,30 +35,42 @@ namespace Scheduling.API.Services
                 , UpdatedBy = appointment.UpdatedBy
                 , ApptStatus = appointment.ApptStatus
             };
-
         }
 
-        public async Task<object> CreateAppointment(string time)
+        /// <summary>
+        /// CreateAppointment
+        /// </summary>
+        /// <param name="GenerateAppointmentDto"></param>
+        /// <returns></returns>
+        public async Task<object> CreateAppointment([FromBody] GenerateAppointmentDto appt)
         {
-            var appointment = Appointment.CreateNewAppointment(time);
-            var appointmentId = await _scheduleRepository.SaveAppointmentAsync(appointment);
-            return appointmentId;
+            var appointment = Appointment.CreateNewAppointment(appt.ApptTime, appt.PatientId, appt.UpdatedBy);
+            var apptId = await _scheduleRepository.SaveAppointmentAsync(appointment);
+
+            return apptId;
         }
 
-        public async Task<AppointmentDto>  CancelAppointment(string appointmentId, string updatedBy)
+        /// <summary>
+        /// CancelAppointment
+        /// </summary>
+        /// <param name="appointmentId"></param>
+        /// <param name="updatedBy"></param>
+        /// <returns></returns>
+        public async Task<AppointmentDto> CancelAppointment(string appointmentId, string updatedBy)
         {
             var appointment = await _scheduleRepository.GetAppointment(appointmentId);
 
-            if (appointment == null) throw new Exception($"Not found {appointmentId}"); // throw appt not found exception
+            if (appointment == null)
+                throw new Exception($"Not found {appointmentId}"); // throw appt not found exception
 
-            appointment.CancelAppointment(appointment);
+            appointment.CancelAppointment(appointment, updatedBy);
             await _scheduleRepository.SaveAppointmentAsync(appointment);
 
             return new AppointmentDto
             {
-                AppointmentId =  appointmentId
+                AppointmentId = appointmentId
                 , ApptTime = appointment.ApptTime
-                , PatientId = null
+                , PatientId = appointment.PatientId
                 , UpdatedBy = appointment.UpdatedBy
                 , ApptStatus = appointment.ApptStatus
             };

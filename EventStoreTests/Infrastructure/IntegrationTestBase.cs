@@ -16,19 +16,18 @@ namespace Scheduling.EventStoreProjectTests.Infrastructure
         {
             _databaseName = Guid.NewGuid().ToString();
             ConnectionString = $@"Server=(localdb)\mssqllocaldb;Database={_databaseName};Trusted_Connection=True;";
-            Program.Main(new string[] { ConnectionString });
+            Program.Main(new string[] {ConnectionString});
         }
 
         [OneTimeTearDown]
         public void Teardown()
         {
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (var conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
 
-                using (SqlCommand command = new SqlCommand())
+                using (var command = new SqlCommand())
                 {
-
                     command.Connection = conn;
 
                     command.CommandText = "USE master";

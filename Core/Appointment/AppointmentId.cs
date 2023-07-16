@@ -12,11 +12,14 @@ namespace Scheduling.Core.Appointment
             _guid = Guid.NewGuid();
         }
 
-        public  AppointmentId(string id)
+        public AppointmentId(string id)
         {
             _guid = Guid.Parse(id);
         }
 
-        public override string ToString() => _guid.ToString();
+        public override string ToString()
+        {
+            return _guid.ToString();
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Scheduling.Infrastructure.Model
         public int Version { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
-        
+
         [Description("ignore")]
         public int Sequence { get; set; }
 

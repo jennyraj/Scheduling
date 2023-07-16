@@ -15,20 +15,18 @@ namespace Schedluing.DbMigration
             EnsureDatabase.For.SqlDatabase(connectionString); //Creates database if not exist
 
             var upgradeEngineBuilder = DeployChanges.To
-                            .SqlDatabase(connectionString, null)
-                            .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                            .WithTransaction()
-                            .LogToConsole();
+                .SqlDatabase(connectionString, null)
+                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                .WithTransaction()
+                .LogToConsole();
 
             var upgrader = upgradeEngineBuilder.Build();
             if (upgrader.IsUpgradeRequired())
             {
                 var results = upgrader.PerformUpgrade();
-                if (results.Successful)
-                {
-                    Console.WriteLine("Database upgrade success");
-                }
-            } else
+                if (results.Successful) Console.WriteLine("Database upgrade success");
+            }
+            else
             {
                 Console.WriteLine("No upgrade is required");
             }
@@ -36,13 +34,12 @@ namespace Schedluing.DbMigration
 
         private static string GetConnectionString(string connString)
         {
-
             if (!string.IsNullOrWhiteSpace(connString)) return connString;
 
             IConfiguration config = new ConfigurationBuilder()
-           .AddJsonFile("appsettings.json",
-                        true,
-                        true).Build();
+                .AddJsonFile("appsettings.json",
+                    true,
+                    true).Build();
 
             return config.GetConnectionString("EventStoreDatabase");
         }

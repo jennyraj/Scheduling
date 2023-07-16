@@ -4,7 +4,7 @@ using Tacta.EventStore.Domain;
 
 namespace Scheduling.Core.Appointment
 {
-    public class Appointment: AggregateRoot<AppointmentId>
+    public class Appointment : AggregateRoot<AppointmentId>
     {
         public override AppointmentId Id { get; protected set; }
         public string ApptTime { get; private set; }
@@ -18,42 +18,43 @@ namespace Scheduling.Core.Appointment
 
         private Appointment()
         {
-            
         }
 
-        public void BookAppointment(string apptTime,string patientId, string updatedBy )
+        public void CancelAppointment(Appointment appointment, string updatedBy)
         {
-            Apply(new AppointmentBooked(apptTime,patientId,updatedBy, Id.ToString()));
-        }
-
-        public void On(AppointmentBooked  @event)
-        {
-
-
-        }
-
-        public void CancelAppointment(Appointment appointment  )
-        {
-            appointment.ApptStatus = "Cancelled";
+            appointment.ApptStatus = Core.Appointment.ApptStatus.Cancelled;
             appointment.PatientId = null;
-            //TODO  Apply(new AppointmentCancelled(  appointmentId));
+            appointment.UpdatedBy = updatedBy;
+            Apply(new AppointmentCancelled(appointment.UpdatedBy, appointment.ApptStatus, appointment.PatientId
+                , Id.ToString()));
         }
+
         public void On(AppointmentCancelled @event)
         {
-
+            ApptStatus = @event.ApptStatus;
+            PatientId = @event.PatientId;
+            UpdatedBy = @event.UpdatedBy;
         }
 
         public void On(AppointmentCreated @event)
         {
-              Id = new AppointmentId(@event.AppointmentId);
-              ApptTime = @event.AppointmentTime;
-
+            Id = new AppointmentId(@event.AppointmentId);
+            ApptTime = @event.AppointmentTime;
+            PatientId = @event.PatientId;
         }
-        public static Appointment CreateNewAppointment(string time)
+
+        public static Appointment CreateNewAppointment(string time, string patientId, string lastUpdatedBy)
         {
-            var appt = new Appointment();
+            var appt = new Appointment
+            {
+                ApptTime = time
+                , PatientId = patientId
+                , ApptStatus = Core.Appointment.ApptStatus.Scheduled
+                , UpdatedBy = lastUpdatedBy
+            };
+
             appt.Apply(new AppointmentCreated(new AppointmentId().ToString(),
-                time));
+                patientId, time));
 
             return appt;
         }

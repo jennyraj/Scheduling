@@ -16,16 +16,16 @@ namespace Scheduling.Infrastructure.Repositories
     {
         private string EventStoreTableName = "EventStore";
 
-        private static string EventStoreListOfColumnsInsert = "[Id], [CreatedAt], [Version], [Name], [AggregateId], [Data], [Aggregate]";
+        private static string EventStoreListOfColumnsInsert =
+            "[Id], [CreatedAt], [Version], [Name], [AggregateId], [Data], [Aggregate]";
 
         private static readonly string EventStoreListOfColumnsSelect = $"{EventStoreListOfColumnsInsert},[Sequence]";
 
         private readonly ISqlConnectionFactory _connectionFactory;
 
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings()
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new()
         {
-            TypeNameHandling = TypeNameHandling.All,
-            NullValueHandling = NullValueHandling.Ignore
+            TypeNameHandling = TypeNameHandling.All, NullValueHandling = NullValueHandling.Ignore
         };
 
         public EventStoreRepository(ISqlConnectionFactory connectionFactory)
@@ -44,7 +44,8 @@ namespace Scheduling.Infrastructure.Repositories
 
             using (var connection = _connectionFactory.SqlConnection())
             {
-                var events = (await connection.QueryAsync<EventStoreDao>(query.ToString(), aggregateRootId != null ? new { AggregateId = aggregateRootId.ToString() } : null)).ToList();
+                var events = (await connection.QueryAsync<EventStoreDao>(query.ToString()
+                    , aggregateRootId != null ? new {AggregateId = aggregateRootId.ToString()} : null)).ToList();
                 var domainEvents = events.Select(TransformEvent).Where(x => x != null).ToList().AsReadOnly();
 
                 return domainEvents;
@@ -60,7 +61,8 @@ namespace Scheduling.Infrastructure.Repositories
         }
 
 
-        public async Task SaveAsync(EntityId aggregateId, int originatingVersion, IReadOnlyCollection<IDomainEvent> events, string aggregateName = "Aggregate Name")
+        public async Task SaveAsync(EntityId aggregateId, int originatingVersion
+            , IReadOnlyCollection<IDomainEvent> events, string aggregateName = "Aggregate Name")
         {
             if (events.Count == 0) return;
 
@@ -70,13 +72,13 @@ namespace Scheduling.Infrastructure.Repositories
 
             var listOfEvents = events.Select(ev => new
             {
-                Aggregate = aggregateName,
-                ev.CreatedAt,
-                Data = JsonConvert.SerializeObject(ev, Formatting.Indented, _jsonSerializerSettings),
-                Id = Guid.NewGuid(),
-                ev.GetType().Name,
-                AggregateId = aggregateId.ToString(),
-                Version = ++originatingVersion
+                Aggregate = aggregateName
+                , ev.CreatedAt
+                , Data = JsonConvert.SerializeObject(ev, Formatting.Indented, _jsonSerializerSettings)
+                , Id = Guid.NewGuid()
+                , ev.GetType().Name
+                , AggregateId = aggregateId.ToString()
+                , Version = ++originatingVersion
             });
 
             using var connection = _connectionFactory.SqlConnection();
